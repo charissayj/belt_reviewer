@@ -1,0 +1,41 @@
+<a href="/events">Events Dashboard</a>
+<h2><%= @event.name %></h2>
+<p>Host: <%= @event.user.first_name %> <%= @event.user.last_name %></p>
+<p>Date: <%= @event.date %></p>
+<p>Date: <%= @event.location %>, <%= @event.state %></p>
+
+<p>People who are joining this event: <%= @event.users.count %> </p>
+<% unless @event.users.empty? %>
+	<table>
+		<thead>
+			<th>Name</th>
+			<th>Location</th>
+			<th>State</th>
+		</thead>
+		<tbody>
+			<% @event.users.each do |user| %>
+				<tr>
+					<td><%= user.first_name %> <%= user.last_name %></td>
+					<td><%= user.location %></td>
+					<td><%= user.state %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+	<% else %>
+	<p>No one has joined this event yet</p>
+<% end %>
+<p>Add a comment:</p>
+<form action="/events/<%= @event.id %>/comments" method="post">
+	<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+	<textarea name="comment[content]"></textarea>
+	<input type="submit" value="Submit Comments"/>
+</form>
+<p>Discussion about this event:</p>
+<ul>
+<% @comments.each do |comment| %>
+	<% if @event.id == comment.event.id %>
+		<li><%= comment.user.first_name %> says: <%= comment.content %></li>
+	<% end %>
+<% end %>
+</ul>
